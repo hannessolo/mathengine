@@ -1,6 +1,5 @@
 package calculus;
 
-import java.util.Scanner;
 import java.util.Stack;
 
 import static calculus.BinaryOperation.*;
@@ -9,12 +8,6 @@ import static calculus.UnaryOperation.*;
 public class Calculus {
 
     public static String evaluate(String arg) {
-
-        Identity[] ary = {new Identity("x", 3)};
-
-        System.out.println(postfixEvaluator(postfixConverter(arg)).getPrintable());
-        System.out.println("Evaluated at x=3: " + postfixEvaluator(postfixConverter(arg)).eval(ary));
-        System.out.println("Differentiated: " + postfixEvaluator(postfixConverter(arg)).differentiate("x").getPrintable());
 
         return postfixEvaluator(postfixConverter(arg)).getPrintable();
 
