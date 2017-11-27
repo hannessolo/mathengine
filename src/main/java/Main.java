@@ -39,7 +39,7 @@ public class Main {
 
                 res = Calculus.evaluate(expr);
 
-            } catch (ParseException e) {
+            } catch (Exception e) {
                 res = e.getMessage();
             }
 
