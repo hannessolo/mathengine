@@ -1,5 +1,6 @@
 package calculus;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import static calculus.BinaryOperation.*;
@@ -7,181 +8,84 @@ import static calculus.UnaryOperation.*;
 
 public class Calculus {
 
-    public static String evaluate(String arg) {
+  public static String evaluate(String arg) {
 
-        return postfixEvaluator(postfixConverter(arg)).differentiate("x").getPrintable();
+    return null;
 
+  }
+
+  // take character, check if operator literal or bracket
+  private static boolean isOperator(char c) {
+    final char[] operators = {'+', '-', '*', '/', '(', ')'};
+    for (char o : operators) {
+      if (o == c) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    private static Expression postfixEvaluator(String ex) {
+  public static String[] getTokenizeForTests(String args) {
 
-        Stack<Expression> stack = new Stack<>();
-        String num = "";
-        String func = "";
+    return tokenize(args);
 
-        for (char c : ex.toCharArray()) {
+  }
 
-            if (Character.isDigit(c)) {
+  private static String[] tokenize(String args) {
 
-                num = num.concat(Character.toString(c));
+    ArrayList<String> tokenList = new ArrayList<>();
 
-            } else if (isUnOperator(func)) {
-                // yes this is also hardcoded and broken. fix tomorrow.
+    // set 1 if processing number, set 2 if currently processing variable, 0 otherwise
+    byte type = 0;
 
-                stack.push(new UnaryApplication(NEGATE, stack.pop()));
-                func = "";
+    // stores current number or variable, as processing happens character by character
+    StringBuilder currentBuffer = new StringBuilder();
 
-            } else if (Character.isWhitespace(c) && (!"".equals(num)) ) {
+    // iterate through chars and place into
+    for (char c : args.toCharArray()) {
 
-                stack.push(new Identity(Double.parseDouble(num)));
-                num = "";
-
-            } else if (Character.isWhitespace(c) && (!"".equals(func))) {
-
-                stack.push(new Identity(func));
-                func = "";
-
-            } else if (Character.isAlphabetic(c)) {
-
-                func = func.concat(Character.toString(c));
-
-            } else if (isOperator(c)) {
-
-                if (!"".equals(num)) {
-                    stack.push(new Identity(Double.parseDouble(num)));
-                    num = "";
-                }
-
-                if (!"".equals(func)) {
-                    stack.push(new Identity(func));
-                    func = "";
-                }
-
-                Expression arg1;
-
-                switch (c) {
-                    case ('+'):
-                        arg1 = stack.pop();
-                        stack.push(new BinaryApplication(ADD, stack.pop(), arg1));
-                        break;
-                    case ('-'):
-                        arg1 = stack.pop();
-                        stack.push(new BinaryApplication(SUBTRACT, stack.pop(), arg1));
-                        break;
-                    case ('*'):
-                        arg1 = stack.pop();
-                        stack.push(new BinaryApplication(MULTIPLY, stack.pop(), arg1));
-                        break;
-                    case ('/'):
-                        arg1 = stack.pop();
-                        stack.push(new BinaryApplication(DIVIDE, stack.pop(), arg1));
-                        break;
-                }
-            }
+      if (isOperator(c)) {
+        if (currentBuffer.length() > 0) {
+          // if there is a number in the buffer, place it into the output, clear buffer
+          tokenList.add(currentBuffer.toString());
+          currentBuffer.setLength(0);
         }
-
-        return stack.pop();
-
-    }
-
-    private static boolean isOperator(char c) {
-        char[] operators = {'+', '-', '/', '*'};
-        for (char o : operators) {
-            if (o == c) return true;
+        // add operator to output
+        type = 0;
+        tokenList.add(Character.toString(c));
+      } else if (Character.isDigit(c)) {
+        if (type == 2) {
+          tokenList.add(currentBuffer.toString());
+          currentBuffer.setLength(0);
+          tokenList.add("*");
         }
-        return false;
-    }
-
-    private static boolean isUnOperator(String func) {
-        String[] operators = {"neg"};
-        for (String o : operators) {
-            if (o.equals(func)) return true;
+        type = 1;
+        currentBuffer.append(c);
+      } else if (Character.isAlphabetic(c)) {
+        if (type == 1) {
+          tokenList.add(currentBuffer.toString());
+          currentBuffer.setLength(0);
+          tokenList.add("*");
         }
-        return false;
-    }
-
-    private static String postfixConverter(String ex) {
-
-        // todo: fix: make it also do the right thing if there is no tailing whitespace
-
-        Stack<Character> stack = new Stack<>();
-        String postfix = "";
-        String currentStream = "";
-
-        for (char c : ex.toCharArray()) {
-
-            if (Character.isAlphabetic(c) || Character.isDigit(c)) {
-//              TODO: Make this also happen on closing and opening brackets. So neg(5) and neg ( 5 ) are equivalent.
-                currentStream = currentStream.concat(Character.toString(c));
-
-            } else if (Character.isWhitespace(c)) {
-
-                if (isUnOperator(currentStream)) {
-
-//                  TODO! THIS IS HARDCODED IN AS NEGATIVE! MAKE IT WORK FOR OTHER OPERATIONS!
-                    stack.push('-');
-
-                } else {
-                    postfix = postfix.concat(currentStream);
-                    postfix = postfix.concat(" ");
-                }
-
-                currentStream = "";
-
-
-            } else if (c == '(') {
-
-                stack.push('(');
-
-            } else if (c == ')') {
-
-                while (stack.peek() != '(') {
-                    postfix = postfix.concat(Character.toString(stack.pop()));
-                }
-
-                stack.pop();
-
-//              TODO! THIS IS ALSO HARDCODED! MAKE LOOKUP LIST INSTEAD WHEN LESS TIRED!
-                if (stack.peek() == '-') {
-                    postfix = postfix.concat("neg");
-                    stack.pop();
-                }
-
-            } else if (isOperator(c)) {
-
-                if (stack.empty()) {
-
-                    stack.push(c);
-
-                } else {
-
-                    while (!(stack.empty() || stack.peek() == '(')) {
-                        if (hasHiOrEqPrecedence(stack.peek(), c)) {
-                            postfix = postfix.concat(Character.toString(stack.pop()));
-                        } else {
-                            stack.push(c);
-                            break;
-                        }
-                    }
-
-                    if (stack.isEmpty() || stack.peek() == '(') {
-                        stack.push(c);
-                    }
-                }
-            }
-        }
-
-        while (!stack.empty()) {
-            postfix = postfix.concat(Character.toString(stack.pop()));
-        }
-
-        return postfix;
+        type = 2;
+        currentBuffer.append(c);
+      }
 
     }
 
-    private static boolean hasHiOrEqPrecedence(char a, char b) {
-        return !((a == '+' || a == '-') && (b == '*' || b == '/'));
+    if (currentBuffer.length() > 0) {
+      tokenList.add(currentBuffer.toString());
     }
+
+    return tokenList.toArray(new String[tokenList.size()]);
+
+  }
+
+  private static Expression evaluate() {
+
+    return null;
+
+  }
 
 }
 
