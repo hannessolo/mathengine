@@ -107,4 +107,13 @@ class CalculusTest {
 
   }
 
+  @Test
+  void evaluateTest5() {
+
+    String expected = "((5*5)+(5*5))";
+
+    Assertions.assertEquals(expected, Calculus.evaluate("5*5+5*5"));
+
+  }
+
 }

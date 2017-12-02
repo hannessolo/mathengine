@@ -160,9 +160,7 @@ public class Calculus {
 
     operatorStack.push("$");
 
-    for (int i = 0; i < args.length; i++) {
-
-      String s = args[i];
+    for (String s : args) {
 
       if (s.equals("(")) {
 
@@ -187,7 +185,7 @@ public class Calculus {
         // check if either precedence is greater, or equal and right associative
         if (operatorPrecedence.get(s) > operatorPrecedence.get(operatorStack.peek()) ||
             (operatorPrecedence.get(s).equals(operatorPrecedence.get(operatorStack.peek())) &&
-            isRightAssociative.get(s))) {
+                isRightAssociative.get(s))) {
 
           operatorStack.push(s);
 
@@ -201,6 +199,8 @@ public class Calculus {
             expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
 
           }
+
+          operatorStack.push(s);
 
         }
 
