@@ -9,7 +9,7 @@ public class Calculus {
 
     public static String evaluate(String arg) {
 
-        return postfixEvaluator(postfixConverter(arg)).getPrintable();
+        return postfixEvaluator(postfixConverter(arg)).differentiate("x").getPrintable();
 
     }
 

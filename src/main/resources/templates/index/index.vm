@@ -9,10 +9,12 @@
     <body>
 
     <h1>Welcome</h1>
-    <form>
-        <textarea>Input</textarea>
-        <input type="submit">
-    </form>
+    <textarea id="input">Input</textarea>
+    <button id="submit">Submit</button>
+
+    <p id="result"></p>
+
+    <script src="evaluate.js"></script>
 
     </body>
 
