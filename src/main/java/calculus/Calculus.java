@@ -30,10 +30,10 @@ public class Calculus {
   }
 
   // take character, check if operator literal
-  private static boolean isOperator(char c) {
-    final char[] operators = {'+', '-', '*', '/', '^'};
-    for (char o : operators) {
-      if (o == c) {
+  private static boolean isOperator(String s) {
+    final String[] operators = {"+", "-", "*", "/", "^", "neg"};
+    for (String o : operators) {
+      if (o.equals(s)) {
         return true;
       }
     }
@@ -57,7 +57,23 @@ public class Calculus {
 
       char c = argsArray[i];
 
-      if (isOperator(c)) {
+      if (isOperator(Character.toString(c))) {
+        try {
+          if (c == '-' && isOperator(tokenList.get(i - 1))) {
+            // The minus is a negation as opposed to an operator
+            // implies buffer is empty
+            tokenList.add("neg");
+            type = 0;
+            continue;
+          }
+        } catch (IndexOutOfBoundsException e) {
+          if (i == 0) {
+            // in case it is in the first index
+            tokenList.add("neg");
+            type = 0;
+            continue;
+          }
+        }
         if (currentBuffer.length() > 0) {
           // if there is a number in the buffer, place it into the output, clear buffer
           tokenList.add(currentBuffer.toString());
@@ -75,7 +91,7 @@ public class Calculus {
           currentBuffer.setLength(0);
           tokenList.add("*");
         }
-        // add operator to output
+        // add bracket to output
         type = 0;
         tokenList.add(Character.toString(c));
       } else if (c == ')') {
@@ -84,7 +100,7 @@ public class Calculus {
           tokenList.add(currentBuffer.toString());
           currentBuffer.setLength(0);
         }
-        // add operator to output
+        // add bracket to output
         type = 0;
         tokenList.add(Character.toString(c));
         //look ahead in case of implied multiplication
@@ -92,7 +108,7 @@ public class Calculus {
           if (Character.isAlphabetic(argsArray[j]) || Character.isDigit(argsArray[j])) {
             tokenList.add("*");
             break;
-          } else if (isOperator(argsArray[j])) {
+          } else if (isOperator(Character.toString(argsArray[j]))) {
             break;
           }
         }
@@ -138,6 +154,7 @@ public class Calculus {
       put(")", 1);
       put("+", 6);
       put("-", 6);
+      put("neg", 6);
       put("*", 7);
       put("/", 7);
       put("^", 8);
@@ -152,7 +169,21 @@ public class Calculus {
       put("-", false);
       put("*", false);
       put("/", false);
+      put("neg", true);
       put("^", true);
+    }};
+
+    final HashMap<String, Boolean> isUnOp = new HashMap<String, Boolean>()
+    {{
+      put("$", false);
+      put("(", false);
+      put(")", false);
+      put("+", false);
+      put("-", false);
+      put("*", false);
+      put("/", false);
+      put("neg", true);
+      put("^", false);
     }};
 
     Stack<Expression> expressionStack = new Stack<>();
@@ -193,17 +224,26 @@ public class Calculus {
 
           while (!(operatorPrecedence.get(s) > operatorPrecedence.get(operatorStack.peek()))) {
 
-            Expression arg2 = expressionStack.pop();
-            Expression arg1 = expressionStack.pop();
+            if (isUnOp.get(operatorStack.peek())) {
 
-            expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+              Expression arg = expressionStack.pop();
+
+              expressionStack.push(buildExpression(operatorStack.pop(), arg, null));
+
+            } else {
+
+              Expression arg2 = expressionStack.pop();
+              Expression arg1 = expressionStack.pop();
+
+              expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+
+            }
 
           }
 
           operatorStack.push(s);
 
         }
-
 
       } else {
         // is variable or number
@@ -215,10 +255,20 @@ public class Calculus {
     // now empty operation stack
     while (operatorStack.size() > 1) {
 
-      Expression arg2 = expressionStack.pop();
-      Expression arg1 = expressionStack.pop();
+      if (isUnOp.get(operatorStack.peek())) {
 
-      expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+        Expression arg = expressionStack.pop();
+
+        expressionStack.push(buildExpression(operatorStack.pop(), arg, null));
+
+      } else {
+
+        Expression arg2 = expressionStack.pop();
+        Expression arg1 = expressionStack.pop();
+
+        expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+
+      }
 
     }
 
@@ -239,6 +289,8 @@ public class Calculus {
         return new BinaryApplication(DIVIDE, arg1, arg2);
       case "^":
         return new BinaryApplication(POWER, arg1, arg2);
+      case "neg":
+        return new UnaryApplication(NEGATE, arg1);
       default:
         return null;
     }

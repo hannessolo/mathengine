@@ -72,6 +72,22 @@ class CalculusTest {
   }
 
   @Test
+  void arrayTest9() {
+
+    String[] expected = {"neg", "5"};
+
+    Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("-5"));
+  }
+
+  @Test
+  void arrayTest10() {
+
+    String[] expected = {"neg", "5", "+", "neg", "7"};
+
+    Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("-5+-7"));
+  }
+
+  @Test
   void evaluateTest1() {
 
     String expected = "(1+1)";
@@ -113,6 +129,15 @@ class CalculusTest {
     String expected = "((5*5)+(5*5))";
 
     Assertions.assertEquals(expected, Calculus.evaluate("5*5+5*5"));
+
+  }
+
+  @Test
+  void evaluateTest6() {
+
+    String expected = "(-5)";
+
+    Assertions.assertEquals(expected, Calculus.evaluate("-5"));
 
   }
 
