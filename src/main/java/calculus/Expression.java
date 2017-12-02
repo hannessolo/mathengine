@@ -1,6 +1,6 @@
 package calculus;
 
-interface Expression {
+public interface Expression {
 
     double eval(Identity[] vars);
     String getPrintable();
