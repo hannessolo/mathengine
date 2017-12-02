@@ -46,4 +46,28 @@ class CalculusTest {
     Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("5x + 7-3"));
   }
 
+  @Test
+  void arrayTest6() {
+
+    String[] expected = {"(", "5", "*", "x", "+", "7", ")", "-", "3"};
+
+    Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("(5x + 7)-3"));
+  }
+
+  @Test
+  void arrayTest7() {
+
+    String[] expected = {"(", "5", ")", "*","3"};
+
+    Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("(5)3"));
+  }
+
+  @Test
+  void arrayTest8() {
+
+    String[] expected = {"5", "*", "(", "3", ")"};
+
+    Assertions.assertArrayEquals(expected, Calculus.getTokenizeForTests("5(3)"));
+  }
+
 }
