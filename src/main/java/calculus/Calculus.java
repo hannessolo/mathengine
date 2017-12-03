@@ -59,7 +59,7 @@ public class Calculus {
 
       if (isOperator(Character.toString(c))) {
         try {
-          if (c == '-' && isOperator(tokenList.get(i - 1))) {
+          if (c == '-' && isOperator(tokenList.get(tokenList.size() - 1)) && currentBuffer.length() == 0) {
             // The minus is a negation as opposed to an operator
             // implies buffer is empty
             tokenList.add("neg");

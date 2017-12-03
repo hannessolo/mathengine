@@ -141,4 +141,22 @@ class CalculusTest {
 
   }
 
+  @Test
+  void evaluateTest7() {
+
+    String expected = "((-5)+(-5))";
+
+    Assertions.assertEquals(expected, Calculus.evaluate("-5+ -5"));
+
+  }
+
+  @Test
+  void evaluateTest8() {
+
+    String expected = "(-(-5))";
+
+    Assertions.assertEquals(expected, Calculus.evaluate("--5"));
+
+  }
+
 }
