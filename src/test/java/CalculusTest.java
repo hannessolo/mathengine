@@ -159,4 +159,13 @@ class CalculusTest {
 
   }
 
+  @Test
+  void evaluateTest9() {
+
+    String expected = "((-5)^3)";
+
+    Assertions.assertEquals(expected, Calculus.evaluate("(-5)^3"));
+
+  }
+
 }

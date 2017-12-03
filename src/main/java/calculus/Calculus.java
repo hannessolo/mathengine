@@ -59,7 +59,9 @@ public class Calculus {
 
       if (isOperator(Character.toString(c))) {
         try {
-          if (c == '-' && isOperator(tokenList.get(tokenList.size() - 1)) && currentBuffer.length() == 0) {
+          if (c == '-' && (isOperator(tokenList.get(tokenList.size() - 1))
+              || tokenList.get(tokenList.size() - 1).equals("("))
+              && currentBuffer.length() == 0) {
             // The minus is a negation as opposed to an operator
             // implies buffer is empty
             tokenList.add("neg");
@@ -201,10 +203,20 @@ public class Calculus {
 
         do {
 
-          Expression arg2 = expressionStack.pop();
-          Expression arg1 = expressionStack.pop();
+          if (isUnOp.get(operatorStack.peek())) {
 
-          expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+            Expression arg = expressionStack.pop();
+
+            expressionStack.push(buildExpression(operatorStack.pop(), arg, null));
+
+          } else {
+
+            Expression arg2 = expressionStack.pop();
+            Expression arg1 = expressionStack.pop();
+
+            expressionStack.push(buildExpression(operatorStack.pop(), arg1, arg2));
+
+          }
 
         } while (!operatorStack.peek().equals("("));
 
