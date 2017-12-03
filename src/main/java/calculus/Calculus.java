@@ -29,6 +29,12 @@ public class Calculus {
 
   }
 
+  public static String getDifferentiatedForTests(String args) {
+
+    return evaluate(tokenize(args)).differentiate("x").getPrintable();
+
+  }
+
   // take character, check if operator literal
   private static boolean isOperator(String s) {
     final String[] operators = {"+", "-", "*", "/", "^", "neg"};

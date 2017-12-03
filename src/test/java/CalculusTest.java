@@ -168,4 +168,13 @@ class CalculusTest {
 
   }
 
+  @Test
+  void differentiateTest1() {
+
+    String expected = "((2*(x^(2-1.0)))*1.0)";
+
+    Assertions.assertEquals(expected, Calculus.getDifferentiatedForTests("x^2"));
+
+  }
+
 }
