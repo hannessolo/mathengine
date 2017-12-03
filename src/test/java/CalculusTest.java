@@ -177,4 +177,13 @@ class CalculusTest {
 
   }
 
+  @Test
+  void evaluateAtTest1() {
+
+    double expected = 2;
+
+    Assertions.assertEquals(expected, Calculus.evaluate("1+x", 1));
+
+  }
+
 }

@@ -46,8 +46,27 @@ public class Main {
         JSONObject data = (JSONObject) parser.parse(request.body());
 
         String expr = (String) data.get("expression");
+        String action = (String) data.get("action");
+        String param = (String) data.get("param");
 
-        res = Calculus.evaluate(expr);
+        switch (action){
+          case "evaluate":
+            try {
+              res = Double.toString(Calculus.evaluate(expr, Double.parseDouble(param)));
+            } catch (NumberFormatException e) {
+              res = null;
+            }
+            break;
+          case "differentiate":
+            try {
+              res = Calculus.differentiate(expr, param);
+            } catch (NumberFormatException e) {
+              res = null;
+            }
+            break;
+          default:
+            res = null;
+        }
 
       } catch (Exception e) {
         res = e.getMessage();

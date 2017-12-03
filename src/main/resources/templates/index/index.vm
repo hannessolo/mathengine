@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <title>Mathengine</title>
-        <link href="style.css" rel="stylesheet" type="text/css">
-    </head>
+<head>
+  <title>Mathengine</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+</head>
 
-    <body>
+<body>
 
-    <h1>Welcome</h1>
-    <textarea id="input">Input</textarea>
-    <button id="submit">Submit</button>
+<div id="main-content">
+  <h1>Enter a query:</h1>
+  <div class="stack">
+    <input type="text" id="input" autofocus>
+    <div id="options">
+      <button id="submit" class="buttonStyle">Calculate</button>
+      <select id="select">
+        <option value="evaluate">Evaluate</option>
+        <option value="differentiate">Differentiate</option>
+        <option value="solve">Solve System</option>
+        <option value="simplify">Simplify</option>
+      </select>
+      <span id="text-selection">at x =</span><input type="text" id="param">
+    </div>
+    <div id="result-list"></div>
+  </div>
+</div>
 
-    <p id="result"></p>
+<script src="evaluate.js"></script>
 
-    <script src="evaluate.js"></script>
-
-    </body>
+</body>
 
 </html>

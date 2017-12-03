@@ -6,7 +6,9 @@ document.getElementById("submit").addEventListener("click", () => {
     },
     method: 'POST',
     body: JSON.stringify({
-      expression: document.getElementById("input").value
+      expression: document.getElementById("input").value,
+      param: document.getElementById("param").value,
+      action: document.getElementById("select").value
     })
   }).then(res => {
     console.log(res);
@@ -14,9 +16,13 @@ document.getElementById("submit").addEventListener("click", () => {
   }).then(data => {
     console.log(data);
     if (data.expression === null) {
-      document.getElementById("result").innerHTML = "500: Internal Server Error";
+      alert("Error");
     } else {
-      document.getElementById("result").innerHTML = data.expression;
+      let div = document.getElementById("result-list");
+      let li = document.createElement("p");
+      li.appendChild(document.createTextNode(data.expression));
+      li.setAttribute("class", "result-item");
+      div.insertBefore(li, div.firstElementChild);
     }
 
   }).catch(err => {

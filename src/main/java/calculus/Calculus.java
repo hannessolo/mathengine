@@ -23,6 +23,18 @@ public class Calculus {
 
   }
 
+  public static double evaluate(String arg, double value) {
+
+    return evaluate(tokenize(arg)).eval(new Identity[] {new Identity("x", value)});
+
+  }
+
+  public static String differentiate(String arg, String param) {
+
+    return evaluate(tokenize(arg)).differentiate(param).getPrintable();
+
+  }
+
   public static String[] getTokenizeForTests(String args) {
 
     return tokenize(args);
@@ -65,6 +77,7 @@ public class Calculus {
 
       if (isOperator(Character.toString(c))) {
         try {
+          // check if negation (unOp)
           if (c == '-' && (isOperator(tokenList.get(tokenList.size() - 1))
               || tokenList.get(tokenList.size() - 1).equals("("))
               && currentBuffer.length() == 0) {
@@ -264,8 +277,12 @@ public class Calculus {
         }
 
       } else {
-        // is variable or number
-        expressionStack.push(new Identity(s));
+        // is variable or number. Try adding as number, else as var.
+        try {
+          expressionStack.push(new Identity(Double.parseDouble(s)));
+        } catch (NumberFormatException e) {
+          expressionStack.push(new Identity(s));
+        }
       }
 
     }
