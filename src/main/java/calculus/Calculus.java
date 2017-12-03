@@ -49,7 +49,7 @@ public class Calculus {
 
   // take character, check if operator literal
   private static boolean isOperator(String s) {
-    final String[] operators = {"+", "-", "*", "/", "^", "neg"};
+    final String[] operators = {"+", "-", "*", "/", "^", "neg", "="};
     for (String o : operators) {
       if (o.equals(s)) {
         return true;
@@ -58,7 +58,7 @@ public class Calculus {
     return false;
   }
 
-  private static String[] tokenize(String args) {
+  public static String[] tokenize(String args) {
 
     ArrayList<String> tokenList = new ArrayList<>();
 
